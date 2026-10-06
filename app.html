@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Resttek — Arquitectura</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  :root { --bg:#f7f8fa; --fg:#1f2430; --mute:#6b7280; --line:#9aa3b2; --card:#fff;
+          --fe:#2563eb; --shared:#7c3aed; --api:#059669; --ddd:#d97706; --db:#475569; }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg:#12151c; --fg:#e5e7eb; --mute:#9ca3af; --line:#566074; --card:#1b2030;
+            --fe:#60a5fa; --shared:#a78bfa; --api:#34d399; --ddd:#fbbf24; --db:#94a3b8; }
+  }
+  body { margin:0; background:var(--bg); color:var(--fg); font:14px/1.4 system-ui,sans-serif; }
+  h1 { font-size:18px; margin:16px 20px 0; }
+  p.sub { margin:2px 20px 8px; color:var(--mute); }
+  svg { width:100%; height:auto; display:block; }
+  .grp { fill:none; stroke-width:1.5; stroke-dasharray:6 4; rx:10; }
+  .grp-t { font-size:12px; font-weight:600; letter-spacing:.04em; text-transform:uppercase; }
+  .node rect { fill:var(--card); stroke-width:1.8; rx:7; }
+  .node text { fill:var(--fg); font-size:12px; text-anchor:middle; }
+  .node .s { fill:var(--mute); font-size:10.5px; }
+  .edge { stroke:var(--line); stroke-width:1.4; fill:none; marker-end:url(#arr); }
+  .edge.dash { stroke-dasharray:4 3; }
+  .lbl { fill:var(--mute); font-size:10.5px; text-anchor:middle; }
+  .fe rect{stroke:var(--fe)} .sh rect{stroke:var(--shared)} .ap rect{stroke:var(--api)}
+  .dd rect{stroke:var(--ddd)} .db rect{stroke:var(--db)}
+  .node { cursor:default; } .node:hover rect { stroke-width:3; }
+  .dim { opacity:.15; }
+  table { border-collapse:collapse; margin:0 20px 24px; width:calc(100% - 40px); background:var(--card); }
+  th,td { border:1px solid var(--line); padding:6px 10px; text-align:left; font-size:13px; }
+  th { background:var(--bg); } td.app { font-weight:600; }
+  h2 { font-size:15px; margin:20px 20px 6px; }
+  #tip { position:fixed; max-width:320px; padding:8px 10px; background:var(--fg); color:var(--bg);
+         border-radius:6px; font-size:12.5px; line-height:1.4; pointer-events:none; opacity:0;
+         transition:opacity .1s; z-index:10; box-shadow:0 4px 12px rgba(0,0,0,.25); }
+  #tip.on { opacity:1; }
+</style>
+</head>
+<body>
+<h1>Resttek — Arquitectura</h1>
+<p class="sub">Monorepo npm workspaces · Angular 21 (3 apps + librería) · API Express 5 + TypeScript · SQLite. Pasa el ratón sobre un nodo para resaltarlo.</p>
+
+<svg id="g" viewBox="0 0 1200 1010" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0L10 5L0 10z" fill="#9aa3b2"/>
+    </marker>
+  </defs>
+
+  <!-- Groups -->
+  <rect class="grp" x="20" y="20" width="1160" height="250" stroke="var(--fe)"/>
+  <text class="grp-t" x="36" y="42" fill="var(--fe)">Frontends · Angular 21 (standalone, signals, zoneless)</text>
+
+  <rect class="grp" x="20" y="300" width="1160" height="90" stroke="var(--shared)"/>
+  <text class="grp-t" x="36" y="320" fill="var(--shared)">Librería compartida (consumida desde el fuente, sin build)</text>
+
+  <rect class="grp" x="20" y="420" width="1160" height="500" stroke="var(--api)"/>
+  <text class="grp-t" x="36" y="442" fill="var(--api)">API · Express 5 + TypeScript · /api/v1</text>
+
+  <!-- Frontends -->
+  <g class="node fe" id="admin" data-desc="Panel de administración (Angular, :4200). Gestión de restaurantes, platos, ingredientes y empleados. Cada feature tiene pages, services y un store con signals. Acceso para admin y gerentes."><rect x="60" y="70" width="320" height="170"/>
+    <text x="220" y="94" font-weight="600">web-admin :4200</text>
+    <text class="s" x="220" y="116">features: dashboard · restaurants</text>
+    <text class="s" x="220" y="132">dishes · ingredients · employees</text>
+    <text class="s" x="220" y="160">pages → store (signals) → service</text>
+    <text class="s" x="220" y="176">store usa firstValueFrom</text>
+    <text class="s" x="220" y="204">roles: admin, manager</text></g>
+  <g class="node fe" id="emp" data-desc="App de empleados (Angular, :4201). Vistas de cocina, barra y salón para seguir y cambiar el estado de los ítems de cada pedido. OrderStore consulta la API cada 30 s (no hay websockets)."><rect x="440" y="70" width="320" height="170"/>
+    <text x="600" y="94" font-weight="600">web-empleados :4201</text>
+    <text class="s" x="600" y="116">features: dashboard · orders</text>
+    <text class="s" x="600" y="132">vistas cocina / barra / salón</text>
+    <text class="s" x="600" y="160">pages → store (signals) → service</text>
+    <text class="s" x="600" y="176">OrderStore: polling 30 s</text>
+    <text class="s" x="600" y="204">roles: manager, cocinero, camarero</text></g>
+  <g class="node fe" id="cli" data-desc="App de pedidos para clientes (Angular, :4202). Ver restaurantes y carta, llenar el carrito (CartStore, solo local) y hacer pedidos. Sigue el estado con polling de 10 s (lista) y 5 s (detalle)."><rect x="820" y="70" width="320" height="170"/>
+    <text x="980" y="94" font-weight="600">web-clientes :4202</text>
+    <text class="s" x="980" y="116">features: restaurants · menu · cart · orders</text>
+    <text class="s" x="980" y="144">core/: models · services · CartStore</text>
+    <text class="s" x="980" y="160">componentes → service (.subscribe)</text>
+    <text class="s" x="980" y="176">polling 10 s / 5 s (setInterval)</text>
+    <text class="s" x="980" y="204">rol: cliente</text></g>
+
+  <!-- Shared -->
+  <g class="node sh" id="shared" data-desc="Librería @resttek/web-shared usada por los 3 frontends. Aporta autenticación (servicio, store con localStorage y guard), interceptors HTTP y los componentes de login y registro. Se consume desde el código fuente, sin compilar."><rect x="60" y="334" width="1080" height="46"/>
+    <text x="600" y="354" font-weight="600">@resttek/web-shared</text>
+    <text class="s" x="600" y="370">API_URL token · AuthService · AuthStore (localStorage) · authGuard · auth.interceptor (Bearer) · error.interceptor (401→login) · Login / Register</text></g>
+
+  <!-- API: entry -->
+  <g class="node ap" id="app" data-desc="Punto de entrada de la API. app.ts configura cors, express.json y monta todos los routers bajo /api/v1 más el errorHandler; server.ts arranca el servidor en :3000. /health queda fuera del prefijo."><rect x="440" y="460" width="320" height="56"/>
+    <text x="600" y="484" font-weight="600">app.ts / server.ts</text>
+    <text class="s" x="600" y="502">cors · express.json · montaje de routers · GET /health</text></g>
+
+  <!-- Hexagonal -->
+  <rect class="grp" x="40" y="540" width="540" height="365" stroke="var(--ddd)"/>
+  <text class="grp-t" x="56" y="560" fill="var(--ddd)">Hexagonal + DDD · contexts/employee</text>
+
+  <g class="node dd" id="eroutes" data-desc="Adaptadores HTTP del contexto employee: rutas de auth, empleados y empleados por restaurante, con sus controladores. dependencies.ts construye y cablea las dependencias."><rect x="60" y="575" width="500" height="50"/>
+    <text x="310" y="596" font-weight="600">infrastructure/http</text>
+    <text class="s" x="310" y="612">auth · employee · restaurant-employee routes · Auth/EmployeeController · dependencies.ts</text></g>
+  <g class="node dd" id="uc" data-desc="Casos de uso del contexto employee, una clase con execute() cada uno: login, alta de empleado por un admin y auto-registro de clientes (fuerza rol cliente)."><rect x="60" y="655" width="500" height="50"/>
+    <text x="310" y="676" font-weight="600">application</text>
+    <text class="s" x="310" y="692">LoginUseCase · CreateEmployeeUseCase · RegisterClientUseCase</text></g>
+  <g class="node dd" id="dom" data-desc="Dominio del contexto employee. Employee es la única entidad rica (constructor privado + create()). Value objects Email y Role, y los puertos IEmployeeRepository e IAuthService."><rect x="60" y="735" width="500" height="60"/>
+    <text x="310" y="756" font-weight="600">domain</text>
+    <text class="s" x="310" y="772">Employee (create()) · Email · Role · IEmployeeRepository · IAuthService</text></g>
+  <g class="node dd" id="einfra" data-desc="Adaptadores de salida del contexto employee: repositorio SQLite que reconstruye la entidad con Employee.create() y servicio de hash/JWT con bcrypt."><rect x="60" y="825" width="500" height="60"/>
+    <text x="310" y="846" font-weight="600">infrastructure (adaptadores)</text>
+    <text class="s" x="310" y="862">SqliteEmployeeRepository · BcryptAuthService</text></g>
+
+  <!-- Layered -->
+  <rect class="grp" x="620" y="540" width="540" height="365" stroke="var(--api)"/>
+  <text class="grp-t" x="636" y="560" fill="var(--api)">Por capas · restaurant · dish · ingredient · order</text>
+
+  <g class="node ap" id="routes" data-desc="Definen las URLs de restaurant, dish, ingredient y order, aplican authenticate/authorize(roles) y componen repositorio → servicio → controlador. Incluyen las rutas públicas de la app de clientes."><rect x="640" y="575" width="500" height="50"/>
+    <text x="890" y="596" font-weight="600">routes/ (+ composición de dependencias)</text>
+    <text class="s" x="890" y="612">authenticate · authorize(roles) · rutas públicas /public/restaurants</text></g>
+  <g class="node ap" id="ctrl" data-desc="Controladores HTTP de restaurant, dish, ingredient y order. Traducen petición/respuesta y delegan en el servicio. OrderController gestiona sus propios errores sin pasar por el errorHandler."><rect x="640" y="655" width="500" height="50"/>
+    <text x="890" y="676" font-weight="600">controllers/</text>
+    <text class="s" x="890" y="692">Restaurant · Dish · Ingredient · Order</text></g>
+  <g class="node ap" id="svc" data-desc="Lógica de negocio y validación de los dominios por capas. Los modelos son interfaces planas con funciones normalizeX(). Al crear un pedido, cada unidad se guarda como una fila de order_items."><rect x="640" y="735" width="500" height="50"/>
+    <text x="890" y="756" font-weight="600">services/ + models/</text>
+    <text class="s" x="890" y="772">lógica de negocio · interfaces planas · normalizeX()</text></g>
+  <g class="node ap" id="repo" data-desc="Persistencia SQLite de los dominios por capas. La interfaz y su implementación Sqlite*Repository conviven en el mismo fichero; save() decide entre INSERT y UPDATE."><rect x="640" y="825" width="500" height="60"/>
+    <text x="890" y="846" font-weight="600">repositories/</text>
+    <text class="s" x="890" y="862">interfaz + Sqlite*Repository (mismo fichero)</text></g>
+
+  <!-- Shared API + DB -->
+  <g class="node ap" id="mw" data-desc="Middlewares authenticate (JWT → 401) y authorize (rol → 403), errorHandler que traduce el nombre de la clase de error a código HTTP (404/401/400/500) y la jerarquía AppError / DomainErrors."><rect x="800" y="460" width="340" height="56"/>
+    <text x="970" y="484" font-weight="600">contexts/shared · errors/</text>
+    <text class="s" x="970" y="502">middlewares · errorHandler · AppError / DomainErrors</text></g>
+
+  <g class="node db" id="db" data-desc="Clase Database que envuelve sqlite3 con promesas. Crea las tablas al iniciar (CREATE TABLE IF NOT EXISTS), usa resttek.db (o :memory: en tests) y activa PRAGMA foreign_keys."><rect x="440" y="945" width="320" height="50"/>
+    <text x="600" y="967" font-weight="600">config/database.ts → SQLite</text>
+    <text class="s" x="600" y="983">resttek.db (:memory: en tests) · foreign_keys ON</text></g>
+
+  <!-- Edges -->
+  <path class="edge" id="e1" d="M220 240 L220 334"/>
+  <path class="edge" id="e2" d="M600 240 L600 334"/>
+  <path class="edge" id="e3" d="M980 240 L980 334"/>
+  <path class="edge" id="e4" d="M600 380 L600 460"/>
+  <text class="lbl" x="660" y="412">HTTP /api (proxy dev → :3000)</text>
+  <path class="edge" d="M500 516 L330 575"/>
+  <path class="edge" d="M700 516 L880 575"/>
+  <path class="edge dash" d="M760 488 L800 488"/>
+  <path class="edge" d="M310 625 L310 655"/>
+  <path class="edge" d="M310 705 L310 735"/>
+  <path class="edge dash" d="M310 885 L310 800" />
+  <text class="lbl" x="372" y="815">implementa</text>
+  <path class="edge" d="M890 625 L890 655"/>
+  <path class="edge" d="M890 705 L890 735"/>
+  <path class="edge" d="M890 785 L890 825"/>
+  <path class="edge" d="M310 885 L520 945"/>
+  <path class="edge" d="M890 885 L690 945"/>
+</svg>
+
+<svg viewBox="0 0 1200 40" xmlns="http://www.w3.org/2000/svg" style="margin-top:-8px">
+  <g font-size="11" fill="currentColor">
+    <path d="M40 20 H80" stroke="#9aa3b2" stroke-width="1.4" marker-end="url(#arr)"/>
+    <text x="90" y="24" fill="var(--mute)">dependencia / llamada</text>
+    <path d="M280 20 H320" stroke="#9aa3b2" stroke-width="1.4" stroke-dasharray="4 3"/>
+    <text x="330" y="24" fill="var(--mute)">implementa / uso transversal</text>
+  </g>
+</svg>
+
+<h2>Usuarios por aplicación</h2>
+<table>
+<tr><th>Aplicación</th><th>Usuario (email = contraseña)</th><th>Tipo</th><th>Restaurante</th><th>Notas</th></tr>
+<tr><td class="app" rowspan="3">web-admin :4200</td><td>admin@resttek.com</td><td>Admin</td><td>—</td><td>Acceso global a todos los restaurantes</td></tr>
+<tr><td>gerente1@resttek.com</td><td>Gerente (manager)</td><td>rest-1</td><td>También accede a web-empleados</td></tr>
+<tr><td>gerente2@resttek.com</td><td>Gerente (manager)</td><td>rest-2</td><td>También accede a web-empleados</td></tr>
+<tr><td class="app" rowspan="7">web-empleados :4201</td><td>gerente1@resttek.com</td><td>Gerente (manager)</td><td>rest-1</td><td>Compartido con web-admin</td></tr>
+<tr><td>gerente2@resttek.com</td><td>Gerente (manager)</td><td>rest-2</td><td>Compartido con web-admin</td></tr>
+<tr><td>cocinero1@resttek.com</td><td>Cocinero</td><td>rest-1</td><td>Vista Cocina</td></tr>
+<tr><td>cocinero2@resttek.com</td><td>Cocinero</td><td>rest-2</td><td>Vista Cocina</td></tr>
+<tr><td>camarero1@resttek.com</td><td>Camarero</td><td>rest-1</td><td>Barra y Salón</td></tr>
+<tr><td>camarero2@resttek.com</td><td>Camarero</td><td>rest-1</td><td>Barra y Salón</td></tr>
+<tr><td>camarero3@resttek.com</td><td>Camarero</td><td>rest-2</td><td>Barra y Salón</td></tr>
+<tr><td class="app" rowspan="2">web-clientes :4202</td><td>cliente1@resttek.com</td><td>Cliente</td><td>—</td><td>Auto-registro disponible</td></tr>
+<tr><td>cliente2@resttek.com</td><td>Cliente</td><td>—</td><td>Auto-registro disponible</td></tr>
+</table>
+
+<div id="tip" role="tooltip"></div>
+
+<script>
+  // Resalta el nodo bajo el cursor y atenúa el resto.
+  const nodes = document.querySelectorAll('#g .node');
+  nodes.forEach(n => {
+    n.addEventListener('mouseenter', () => nodes.forEach(o => o.classList.toggle('dim', o !== n)));
+    n.addEventListener('mouseleave', () => nodes.forEach(o => o.classList.remove('dim')));
+  });
+
+  // Tooltip con la descripción (data-desc) siguiendo el cursor.
+  const tip = document.getElementById('tip');
+  nodes.forEach(n => {
+    n.addEventListener('mouseenter', () => { tip.textContent = n.dataset.desc; tip.classList.add('on'); });
+    n.addEventListener('mousemove', e => {
+      const w = tip.offsetWidth, h = tip.offsetHeight;
+      tip.style.left = Math.min(e.clientX + 14, innerWidth - w - 8) + 'px';
+      tip.style.top = (e.clientY + 18 + h > innerHeight ? e.clientY - h - 12 : e.clientY + 18) + 'px';
+    });
+    n.addEventListener('mouseleave', () => tip.classList.remove('on'));
+  });
+</script>
+</body>
+</html>
