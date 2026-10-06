@@ -12,19 +12,23 @@ export class DishStore {
   private readonly _error = signal<string | null>(null)
 
   readonly dishes = this._dishes.asReadonly()
+  private _currentRestaurantId: string | null = null
   readonly loading = this._loading.asReadonly()
   readonly error = this._error.asReadonly()
 
   async loadByRestaurant(restaurantId: string): Promise<void> {
+    this._currentRestaurantId = restaurantId
+    this._dishes.set([])
     this._loading.set(true)
     this._error.set(null)
     try {
       const data = await firstValueFrom(this.service.getAll(restaurantId))
+      if (this._currentRestaurantId !== restaurantId) return
       this._dishes.set(data)
     } catch {
-      this._error.set('No se pudieron cargar los platos.')
+      if (this._currentRestaurantId === restaurantId) this._error.set('No se pudieron cargar los platos.')
     } finally {
-      this._loading.set(false)
+      if (this._currentRestaurantId === restaurantId) this._loading.set(false)
     }
   }
 

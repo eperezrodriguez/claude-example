@@ -18,15 +18,17 @@ export class IngredientStore {
 
   async loadByRestaurant(restaurantId: string): Promise<void> {
     this._currentRestaurantId = restaurantId
+    this._ingredients.set([])
     this._loading.set(true)
     this._error.set(null)
     try {
       const data = await firstValueFrom(this.service.getAll(restaurantId))
+      if (this._currentRestaurantId !== restaurantId) return
       this._ingredients.set(data)
     } catch {
-      this._error.set('No se pudieron cargar los ingredientes.')
+      if (this._currentRestaurantId === restaurantId) this._error.set('No se pudieron cargar los ingredientes.')
     } finally {
-      this._loading.set(false)
+      if (this._currentRestaurantId === restaurantId) this._loading.set(false)
     }
   }
 

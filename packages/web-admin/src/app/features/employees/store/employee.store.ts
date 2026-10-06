@@ -12,6 +12,7 @@ export class EmployeeStore {
   private readonly _error = signal<string | null>(null)
 
   readonly employees = this._employees.asReadonly()
+  private _currentRestaurantId: string | null = null
   readonly loading = this._loading.asReadonly()
   readonly error = this._error.asReadonly()
 
@@ -29,15 +30,18 @@ export class EmployeeStore {
   }
 
   async loadByRestaurant(restaurantId: string): Promise<void> {
+    this._currentRestaurantId = restaurantId
+    this._employees.set([])
     this._loading.set(true)
     this._error.set(null)
     try {
       const data = await firstValueFrom(this.service.getByRestaurant(restaurantId))
+      if (this._currentRestaurantId !== restaurantId) return
       this._employees.set(data)
     } catch {
-      this._error.set('No se pudieron cargar los empleados.')
+      if (this._currentRestaurantId === restaurantId) this._error.set('No se pudieron cargar los empleados.')
     } finally {
-      this._loading.set(false)
+      if (this._currentRestaurantId === restaurantId) this._loading.set(false)
     }
   }
 
