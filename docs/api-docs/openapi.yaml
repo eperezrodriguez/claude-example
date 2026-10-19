@@ -28,7 +28,56 @@ tags:
     description: Consulta sin autenticación para clientes
   - name: Sistema
     description: Estado del servicio
-paths: {}
+paths:
+  /auth/login:
+    post:
+      tags: [Auth]
+      summary: Iniciar sesión
+      description: Devuelve un JWT y los datos del usuario. Sirve para empleados y clientes.
+      operationId: login
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/LoginInput' }
+      responses:
+        '200':
+          description: Sesión iniciada.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/AuthResponse' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401':
+          description: Credenciales incorrectas (`InvalidCredentialsError`).
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+              example: { error: InvalidCredentialsError, message: Invalid credentials }
+  /auth/register:
+    post:
+      tags: [Auth]
+      summary: Registrar un cliente
+      description: Crea un usuario con rol `cliente` y devuelve su JWT.
+      operationId: register
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/RegisterInput' }
+      responses:
+        '201':
+          description: Cliente registrado.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/AuthResponse' }
+        '400':
+          description: Datos inválidos o email ya en uso (`DuplicatedEmailError`).
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+              example: { error: DuplicatedEmailError, message: Email is already in use }
 components:
   securitySchemes:
     bearerAuth:
