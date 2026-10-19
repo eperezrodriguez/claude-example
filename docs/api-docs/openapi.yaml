@@ -294,6 +294,125 @@ paths:
             application/json:
               schema: { $ref: '#/components/schemas/Restaurant' }
         '404': { $ref: '#/components/responses/NotFound' }
+  /restaurants/{restaurantId}/dishes:
+    parameters:
+      - name: restaurantId
+        in: path
+        required: true
+        schema: { type: string, format: uuid }
+    post:
+      tags: [Platos]
+      summary: Crear un plato
+      description: "Roles permitidos: `admin`, `manager`."
+      operationId: createDish
+      security: [{ bearerAuth: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/DishInput' }
+      responses:
+        '201':
+          description: Plato creado.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Dish' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+    get:
+      tags: [Platos]
+      summary: Listar los platos de un restaurante
+      description: "Roles permitidos: `admin`, `manager`, `camarero`, `cocinero`. Incluye los no disponibles."
+      operationId: listDishes
+      security: [{ bearerAuth: [] }]
+      responses:
+        '200':
+          description: Platos del restaurante.
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/Dish' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+  /restaurants/{restaurantId}/dishes/{id}:
+    parameters:
+      - name: restaurantId
+        in: path
+        required: true
+        schema: { type: string, format: uuid }
+      - name: id
+        in: path
+        required: true
+        schema: { type: string, format: uuid }
+    get:
+      tags: [Platos]
+      summary: Obtener un plato
+      description: "Roles permitidos: `admin`, `manager`, `camarero`, `cocinero`."
+      operationId: getDish
+      security: [{ bearerAuth: [] }]
+      responses:
+        '200':
+          description: Plato encontrado.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Dish' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+    put:
+      tags: [Platos]
+      summary: Actualizar un plato
+      description: "Roles permitidos: `admin`, `manager`."
+      operationId: updateDish
+      security: [{ bearerAuth: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/DishInput' }
+      responses:
+        '200':
+          description: Plato actualizado.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Dish' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+    delete:
+      tags: [Platos]
+      summary: Eliminar un plato
+      description: "Roles permitidos: `admin`, `manager`."
+      operationId: deleteDish
+      security: [{ bearerAuth: [] }]
+      responses:
+        '204': { description: Plato eliminado. }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+  /public/restaurants/{restaurantId}/dishes:
+    get:
+      tags: [Público]
+      summary: Carta pública de un restaurante
+      description: Sin autenticación. Devuelve solo los platos con `available` verdadero.
+      operationId: listPublicDishes
+      security: []
+      parameters:
+        - name: restaurantId
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        '200':
+          description: Platos disponibles.
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/Dish' }
 components:
   securitySchemes:
     bearerAuth:
