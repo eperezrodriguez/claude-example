@@ -25,7 +25,7 @@ Cada tarea debe poder hacerse en 5-10 minutos.
 - [x] **T11.** Validar con `npx @redocly/cli lint` y corregir errores — `docs/api-docs/openapi.yaml` (~8 min)
 - [x] **T12.** Crear `index.html` con Swagger UI (CDN, versión fijada) que cargue `./openapi.yaml`, con "Try it out" y `persistAuthorization` — `docs/api-docs/index.html` (~8 min)
 - [x] **T13.** Probar con `npx serve docs/api-docs` contra la API en :3000: login y un GET protegido — `docs/api-docs/index.html` (~8 min)
-- [ ] **T14.** Escribir un README en español: visualizar, validar y publicar (GitHub Pages u otro hosting estático) — `docs/api-docs/README.md` (~5 min)
+- [x] **T14.** Escribir un README en español: visualizar, validar y publicar (GitHub Pages u otro hosting estático) — `docs/api-docs/README.md` (~5 min)
 
 ## Criterios de aceptación
 
