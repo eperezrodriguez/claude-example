@@ -78,6 +78,104 @@ paths:
             application/json:
               schema: { $ref: '#/components/schemas/Error' }
               example: { error: DuplicatedEmailError, message: Email is already in use }
+  /employees:
+    post:
+      tags: [Empleados]
+      summary: Crear un empleado
+      description: "Roles permitidos: `admin`."
+      operationId: createEmployee
+      security: [{ bearerAuth: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/CreateEmployeeInput' }
+      responses:
+        '201':
+          description: Empleado creado.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Employee' }
+        '400':
+          description: Datos inválidos, rol inválido o email ya en uso.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+              example: { error: DuplicatedEmailError, message: Email is already in use }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+    get:
+      tags: [Empleados]
+      summary: Listar empleados
+      description: "Roles permitidos: `admin`. Paginado con `limit` y `offset`."
+      operationId: listEmployees
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - name: limit
+          in: query
+          description: Número máximo de resultados.
+          schema: { type: integer, default: 10 }
+        - name: offset
+          in: query
+          description: Número de resultados a saltar.
+          schema: { type: integer, default: 0 }
+        - name: role
+          in: query
+          description: Filtra por rol.
+          schema: { $ref: '#/components/schemas/Role' }
+      responses:
+        '200':
+          description: Lista de empleados.
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/Employee' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+  /employees/{id}:
+    get:
+      tags: [Empleados]
+      summary: Obtener un empleado
+      description: "Roles permitidos: `admin`."
+      operationId: getEmployee
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        '200':
+          description: Empleado encontrado.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Employee' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+  /restaurants/{restaurantId}/employees:
+    get:
+      tags: [Empleados]
+      summary: Listar los empleados de un restaurante
+      description: "Roles permitidos: `admin`."
+      operationId: listEmployeesByRestaurant
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - name: restaurantId
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        '200':
+          description: Empleados del restaurante.
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/Employee' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
 components:
   securitySchemes:
     bearerAuth:

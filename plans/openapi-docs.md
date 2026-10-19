@@ -17,7 +17,7 @@ Cada tarea debe poder hacerse en 5-10 minutos.
 - [x] **T3.** Definir schemas de Order, OrderItem y estados (`order.model.ts`), y de Employee, Role y credenciales de login/registro (`contexts/employee/`) — `docs/api-docs/openapi.yaml` (~10 min)
 - [x] **T4.** Definir `components/responses` de error (400, 401, 403, 404) según `errorHandler.ts` y `middlewares.ts` — `docs/api-docs/openapi.yaml` (~5 min)
 - [x] **T5.** Documentar `POST /auth/login` y `POST /auth/register` (`auth.routes.ts`, `AuthController.ts`) — `docs/api-docs/openapi.yaml` (~5 min)
-- [ ] **T6.** Documentar `/employees` (POST, GET, GET `/{id}`) y `/restaurants/{restaurantId}/employees` (GET), con roles — `docs/api-docs/openapi.yaml` (~8 min)
+- [x] **T6.** Documentar `/employees` (POST, GET, GET `/{id}`) y `/restaurants/{restaurantId}/employees` (GET), con roles — `docs/api-docs/openapi.yaml` (~8 min)
 - [ ] **T7.** Documentar `/restaurants` (POST, GET, GET `/{id}`, PUT `/{id}`) y `/public/restaurants` (GET, GET `/{id}`) — `docs/api-docs/openapi.yaml` (~10 min)
 - [ ] **T8.** Documentar `/restaurants/{restaurantId}/dishes` (CRUD) y `/public/restaurants/{restaurantId}/dishes` (GET) — `docs/api-docs/openapi.yaml` (~10 min)
 - [ ] **T9.** Documentar `/restaurants/{restaurantId}/ingredients` (CRUD) — `docs/api-docs/openapi.yaml` (~8 min)
