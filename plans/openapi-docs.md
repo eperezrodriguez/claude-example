@@ -20,7 +20,7 @@ Cada tarea debe poder hacerse en 5-10 minutos.
 - [x] **T6.** Documentar `/employees` (POST, GET, GET `/{id}`) y `/restaurants/{restaurantId}/employees` (GET), con roles — `docs/api-docs/openapi.yaml` (~8 min)
 - [x] **T7.** Documentar `/restaurants` (POST, GET, GET `/{id}`, PUT `/{id}`) y `/public/restaurants` (GET, GET `/{id}`) — `docs/api-docs/openapi.yaml` (~10 min)
 - [x] **T8.** Documentar `/restaurants/{restaurantId}/dishes` (CRUD) y `/public/restaurants/{restaurantId}/dishes` (GET) — `docs/api-docs/openapi.yaml` (~10 min)
-- [ ] **T9.** Documentar `/restaurants/{restaurantId}/ingredients` (CRUD) — `docs/api-docs/openapi.yaml` (~8 min)
+- [x] **T9.** Documentar `/restaurants/{restaurantId}/ingredients` (CRUD) — `docs/api-docs/openapi.yaml` (~8 min)
 - [ ] **T10.** Documentar `/orders` (POST, GET `/active`, GET `/mine`, GET `/{id}`, PATCH `/{orderId}/items/{itemId}/status`) con los códigos de `order.controller.ts`, y `GET /health` — `docs/api-docs/openapi.yaml` (~10 min)
 - [ ] **T11.** Validar con `npx @redocly/cli lint` y corregir errores — `docs/api-docs/openapi.yaml` (~8 min)
 - [ ] **T12.** Crear `index.html` con Swagger UI (CDN, versión fijada) que cargue `./openapi.yaml`, con "Try it out" y `persistAuthorization` — `docs/api-docs/index.html` (~8 min)
