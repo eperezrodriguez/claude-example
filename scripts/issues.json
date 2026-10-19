@@ -24,12 +24,6 @@
     "body": "Cuando entra un cliente en la app, al elegir el restaurante, primero tendrá que indicar el número de personas, se le deben mostrar las mesas disponibles en las que pueden sentarse según la cantidad de personas y una vez que la elige, y le da a continuar, entonces ya se pone como ocupada y va a la página de la carta para enviar su pedido a cocina y barra.\n\nEl administrador debe de poder gestionar las mesas del restaurante (CRUD). Deben de tener un id, numero, descripcion, capacidad y estado (libre, ocupada, reservada).\n\nLos empleados pueden ver los estados de las mesas y cambiarlos. Además, pueden ver el estado de los pedidos de las mesas ocupadas."
   },
   {
-    "title": "Generar documentación con OpenAPI",
-    "type": "feature",
-    "projects": ["api"],
-    "body": "Generar un documento de OpenAPI 3 en el que se muestre el funcionamiento de la API, para poder publicarlo."
-  },
-  {
     "title": "Implementar sistema de puntos",
     "type": "feature",
     "projects": ["api"],
