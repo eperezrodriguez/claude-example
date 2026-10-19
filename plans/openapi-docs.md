@@ -13,7 +13,7 @@ Generar un documento OpenAPI 3.0 con todos los endpoints de la API de Resttek y 
 Cada tarea debe poder hacerse en 5-10 minutos.
 
 - [x] **T1.** Crear la cabecera: `openapi: 3.0.3`, `info`, `servers` (`http://localhost:3000/api/v1`), `tags` y `securitySchemes` (bearerAuth JWT) — `docs/api-docs/openapi.yaml` (~5 min)
-- [ ] **T2.** Definir schemas de Restaurant, Dish e Ingredient a partir de `restaurant.model.ts`, `dish.model.ts`, `ingredient.model.ts` y `docs/dominio/modelo-datos.md` — `docs/api-docs/openapi.yaml` (~10 min)
+- [x] **T2.** Definir schemas de Restaurant, Dish e Ingredient a partir de `restaurant.model.ts`, `dish.model.ts`, `ingredient.model.ts` y `docs/dominio/modelo-datos.md` — `docs/api-docs/openapi.yaml` (~10 min)
 - [ ] **T3.** Definir schemas de Order, OrderItem y estados (`order.model.ts`), y de Employee, Role y credenciales de login/registro (`contexts/employee/`) — `docs/api-docs/openapi.yaml` (~10 min)
 - [ ] **T4.** Definir `components/responses` de error (400, 401, 403, 404) según `errorHandler.ts` y `middlewares.ts` — `docs/api-docs/openapi.yaml` (~5 min)
 - [ ] **T5.** Documentar `POST /auth/login` y `POST /auth/register` (`auth.routes.ts`, `AuthController.ts`) — `docs/api-docs/openapi.yaml` (~5 min)

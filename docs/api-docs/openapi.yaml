@@ -36,3 +36,91 @@ components:
       scheme: bearer
       bearerFormat: JWT
       description: Token JWT devuelto por `POST /auth/login` o `POST /auth/register`.
+  schemas:
+    Restaurant:
+      type: object
+      required: [id, name, address, email, phone, ownerFirstName, ownerLastName, logoUrl, createdAt, updatedAt]
+      properties:
+        id: { type: string, format: uuid }
+        name: { type: string, example: Casa Pepe }
+        address: { type: string, example: Calle Mayor 1, Madrid }
+        email: { type: string, format: email, example: info@casapepe.com }
+        phone: { type: string, example: "+34 600 123 456" }
+        ownerFirstName: { type: string, example: Pepe }
+        ownerLastName: { type: string, example: García }
+        logoUrl: { type: string, nullable: true }
+        createdAt: { type: string, format: date-time }
+        updatedAt: { type: string, format: date-time }
+    RestaurantInput:
+      type: object
+      required: [name, address, email, phone, ownerFirstName, ownerLastName]
+      properties:
+        name: { type: string }
+        address: { type: string }
+        email: { type: string, format: email }
+        phone:
+          type: string
+          description: De 7 a 20 caracteres entre dígitos, espacios, guiones, paréntesis y un `+` inicial opcional.
+          example: "+34 600 123 456"
+        ownerFirstName: { type: string }
+        ownerLastName: { type: string }
+        logoUrl: { type: string, nullable: true, description: Si se omite se guarda `null`. }
+    DishCategory:
+      type: string
+      enum: [entrante, principal, postre, bebida]
+    DishIngredient:
+      type: object
+      required: [ingredientId, quantity]
+      properties:
+        ingredientId: { type: string, format: uuid }
+        quantity: { type: number, exclusiveMinimum: true, minimum: 0, description: Cantidad del ingrediente por ración. }
+    Dish:
+      type: object
+      required: [id, name, description, price, category, available, restaurantId, ingredients, createdAt, updatedAt]
+      properties:
+        id: { type: string, format: uuid }
+        name: { type: string, example: Tortilla de patatas }
+        description: { type: string, nullable: true }
+        price: { type: number, format: double, example: 8.5 }
+        category: { $ref: '#/components/schemas/DishCategory' }
+        available: { type: boolean }
+        restaurantId: { type: string, format: uuid }
+        ingredients:
+          type: array
+          items: { $ref: '#/components/schemas/DishIngredient' }
+        createdAt: { type: string, format: date-time }
+        updatedAt: { type: string, format: date-time }
+    DishInput:
+      type: object
+      required: [name, price, category]
+      properties:
+        name: { type: string }
+        description: { type: string, nullable: true }
+        price: { type: number, format: double, exclusiveMinimum: true, minimum: 0 }
+        category: { $ref: '#/components/schemas/DishCategory' }
+        available: { type: boolean, description: Por defecto `true` al crear. }
+        ingredients:
+          type: array
+          description: Por defecto lista vacía.
+          items: { $ref: '#/components/schemas/DishIngredient' }
+    IngredientUnit:
+      type: string
+      enum: [kg, g, l, ml, unidad]
+    Ingredient:
+      type: object
+      required: [id, name, unit, currentStock, restaurantId, createdAt, updatedAt]
+      properties:
+        id: { type: string, format: uuid }
+        name: { type: string, example: Patata }
+        unit: { $ref: '#/components/schemas/IngredientUnit' }
+        currentStock: { type: number, minimum: 0, example: 12.5 }
+        restaurantId: { type: string, format: uuid }
+        createdAt: { type: string, format: date-time }
+        updatedAt: { type: string, format: date-time }
+    IngredientInput:
+      type: object
+      required: [name, unit]
+      properties:
+        name: { type: string }
+        unit: { $ref: '#/components/schemas/IngredientUnit' }
+        currentStock: { type: number, minimum: 0, description: Por defecto 0 al crear. }
