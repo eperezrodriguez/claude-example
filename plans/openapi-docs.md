@@ -29,11 +29,11 @@ Cada tarea debe poder hacerse en 5-10 minutos.
 
 ## Criterios de aceptación
 
-- [ ] `docs/api-docs/openapi.yaml` existe y declara `openapi: 3.0.3`.
-- [ ] `npx @redocly/cli lint docs/api-docs/openapi.yaml` termina con 0 errores.
-- [ ] Las 28 operaciones registradas en `packages/api/src/app.ts` y sus `*.routes.ts` aparecen en `paths` con el método y path correctos, más `/health`.
-- [ ] Los endpoints protegidos declaran `security: bearerAuth`. `/auth/*`, `/public/*` y `/health` no lo declaran.
-- [ ] Las operaciones con `authorize()` indican los roles permitidos y la respuesta 403.
-- [ ] Servir `docs/api-docs/` con un servidor estático y abrir `index.html` muestra Swagger UI con todos los tags y endpoints, sin errores en consola.
-- [ ] Con la API en :3000, `POST /auth/login` con `admin@resttek.com` desde "Try it out" devuelve 200. Tras autorizar con el token, `GET /restaurants` devuelve 200.
-- [ ] `git diff --stat` no muestra cambios bajo `packages/`, y `npm test` sigue pasando.
+- [x] `docs/api-docs/openapi.yaml` existe y declara `openapi: 3.0.3`.
+- [x] `npx @redocly/cli lint docs/api-docs/openapi.yaml` termina con 0 errores.
+- [x] Las 28 operaciones registradas en `packages/api/src/app.ts` y sus `*.routes.ts` aparecen en `paths` con el método y path correctos, más `/health`.
+- [x] Los endpoints protegidos declaran `security: bearerAuth`. `/auth/*`, `/public/*` y `/health` no lo declaran.
+- [x] Las operaciones con `authorize()` indican los roles permitidos y la respuesta 403.
+- [x] Servir `docs/api-docs/` con un servidor estático y abrir `index.html` muestra Swagger UI con todos los tags y endpoints, sin errores en consola.
+- [x] Con la API en :3000, `POST /auth/login` con `admin@resttek.com` desde "Try it out" devuelve 200. Tras autorizar con el token, `GET /restaurants` devuelve 200.
+- [x] `git diff --stat` no muestra cambios bajo `packages/`, y `npm test` sigue pasando.
