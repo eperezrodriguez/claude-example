@@ -124,6 +124,15 @@ components:
         name: { type: string }
         unit: { $ref: '#/components/schemas/IngredientUnit' }
         currentStock: { type: number, minimum: 0, description: Por defecto 0 al crear. }
+    Error:
+      type: object
+      description: |
+        Cuerpo de error. Los errores de dominio (`errorHandler`) devuelven `error` con el nombre
+        del error y `message`; los middlewares de autenticación y `/orders` devuelven solo `error`.
+      required: [error]
+      properties:
+        error: { type: string, example: RestaurantNotFoundError }
+        message: { type: string, example: Restaurant not found }
     OrderStatus:
       type: string
       enum: [pendiente, preparando, listo, entregado]
@@ -219,3 +228,34 @@ components:
       properties:
         token: { type: string, description: JWT para la cabecera `Authorization`. }
         employee: { $ref: '#/components/schemas/Employee' }
+  responses:
+    BadRequest:
+      description: Datos inválidos o error de validación de dominio (cualquier `AppError` que no sea 401/404).
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+          example: { error: InvalidPhoneError, message: Invalid phone format }
+    Unauthorized:
+      description: Falta el token, está mal formado o no es válido (o, en el login, credenciales incorrectas).
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+          example: { error: "Unauthorized: No token provided" }
+    Forbidden:
+      description: El rol del usuario no tiene permiso para este endpoint.
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+          example: { error: "Forbidden: Insufficient permissions" }
+    NotFound:
+      description: El recurso no existe.
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+          example: { error: RestaurantNotFoundError, message: Restaurant not found }
+    InternalServerError:
+      description: Error inesperado.
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+          example: { error: InternalServerError, message: Something went wrong }
