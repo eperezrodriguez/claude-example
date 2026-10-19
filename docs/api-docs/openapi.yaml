@@ -1,0 +1,38 @@
+openapi: 3.0.3
+info:
+  title: Resttek API
+  description: |
+    API REST de Resttek, plataforma de gestión de restaurantes.
+
+    Todas las rutas cuelgan de `/api/v1`, salvo `/health`.
+    Los endpoints protegidos requieren una cabecera `Authorization: Bearer <token>`;
+    el token se obtiene en `POST /auth/login`.
+  version: 1.0.0
+servers:
+  - url: http://localhost:3000/api/v1
+    description: Desarrollo local
+tags:
+  - name: Auth
+    description: Inicio de sesión y registro de clientes
+  - name: Empleados
+    description: Gestión de empleados (solo administradores)
+  - name: Restaurantes
+    description: Gestión de restaurantes
+  - name: Platos
+    description: Carta de cada restaurante
+  - name: Ingredientes
+    description: Inventario de ingredientes de cada restaurante
+  - name: Pedidos
+    description: Pedidos y estado de sus líneas
+  - name: Público
+    description: Consulta sin autenticación para clientes
+  - name: Sistema
+    description: Estado del servicio
+paths: {}
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Token JWT devuelto por `POST /auth/login` o `POST /auth/register`.
