@@ -43,7 +43,7 @@ components:
       properties:
         id: { type: string, format: uuid }
         name: { type: string, example: Casa Pepe }
-        address: { type: string, example: Calle Mayor 1, Madrid }
+        address: { type: string, example: "Calle Mayor 1, Madrid" }
         email: { type: string, format: email, example: info@casapepe.com }
         phone: { type: string, example: "+34 600 123 456" }
         ownerFirstName: { type: string, example: Pepe }
@@ -124,3 +124,98 @@ components:
         name: { type: string }
         unit: { $ref: '#/components/schemas/IngredientUnit' }
         currentStock: { type: number, minimum: 0, description: Por defecto 0 al crear. }
+    OrderStatus:
+      type: string
+      enum: [pendiente, preparando, listo, entregado]
+    OrderItem:
+      type: object
+      description: Cada unidad pedida es una línea independiente con `quantity` 1, para seguir su estado por separado.
+      required: [id, dishId, quantity, notes, status]
+      properties:
+        id: { type: string, format: uuid }
+        dishId: { type: string, format: uuid }
+        quantity: { type: integer, example: 1 }
+        notes: { type: string, nullable: true }
+        status: { $ref: '#/components/schemas/OrderStatus' }
+        dishName: { type: string, description: Solo al consultar pedidos. }
+        dishPrice: { type: number, format: double, description: Solo al consultar pedidos. }
+        dishCategory: { type: string, description: Solo al consultar pedidos. }
+    Order:
+      type: object
+      required: [id, restaurantId, tableId, clientId, createdAt, items]
+      properties:
+        id: { type: string, format: uuid }
+        restaurantId: { type: string, format: uuid }
+        tableId: { type: string, nullable: true }
+        clientId: { type: string, format: uuid, nullable: true, description: Id del usuario autenticado que creó el pedido. }
+        createdAt: { type: string, format: date-time }
+        items:
+          type: array
+          items: { $ref: '#/components/schemas/OrderItem' }
+        restaurantName: { type: string, description: Solo al consultar pedidos. }
+        restaurantLogoUrl: { type: string, nullable: true, description: Solo al consultar pedidos. }
+    CreateOrderInput:
+      type: object
+      required: [restaurantId, items]
+      properties:
+        restaurantId: { type: string, format: uuid }
+        tableId: { type: string, nullable: true }
+        items:
+          type: array
+          description: "Una línea con `quantity: n` se expande en n líneas de cantidad 1."
+          items:
+            type: object
+            required: [dishId, quantity]
+            properties:
+              dishId: { type: string, format: uuid }
+              quantity: { type: integer, minimum: 1 }
+              notes: { type: string, nullable: true }
+    UpdateOrderItemStatusInput:
+      type: object
+      required: [status]
+      properties:
+        status: { $ref: '#/components/schemas/OrderStatus' }
+    Role:
+      type: string
+      enum: [admin, manager, camarero, cocinero, cliente]
+    Employee:
+      type: object
+      description: "Representa a cualquier usuario del sistema, incluidos los clientes (`role: cliente`)."
+      required: [id, firstName, lastName, email, role, restaurantId]
+      properties:
+        id: { type: string, format: uuid }
+        firstName: { type: string }
+        lastName: { type: string }
+        email: { type: string, format: email }
+        role: { $ref: '#/components/schemas/Role' }
+        restaurantId: { type: string, format: uuid, nullable: true, description: Es `null` para admin y cliente. }
+    CreateEmployeeInput:
+      type: object
+      required: [firstName, lastName, email, password, role]
+      properties:
+        firstName: { type: string }
+        lastName: { type: string }
+        email: { type: string, format: email }
+        password: { type: string, format: password }
+        role: { $ref: '#/components/schemas/Role' }
+        restaurantId: { type: string, format: uuid, nullable: true, description: Si se omite se guarda `null`. }
+    LoginInput:
+      type: object
+      required: [email, password]
+      properties:
+        email: { type: string, format: email, example: admin@resttek.com }
+        password: { type: string, format: password, example: admin@resttek.com }
+    RegisterInput:
+      type: object
+      required: [firstName, lastName, email, password]
+      properties:
+        firstName: { type: string }
+        lastName: { type: string }
+        email: { type: string, format: email }
+        password: { type: string, format: password }
+    AuthResponse:
+      type: object
+      required: [token, employee]
+      properties:
+        token: { type: string, description: JWT para la cabecera `Authorization`. }
+        employee: { $ref: '#/components/schemas/Employee' }
