@@ -2,7 +2,7 @@
 
 **Tipo:** <feature | fix | refactor>
 
-**Origen:** <scripts/issues.json — título exacto de la issue> (omitir esta línea si el cambio no viene de `scripts/issues.json`)
+**Origen:** GitHub issue #<número> — <título exacto de la issue>
 
 ## Objetivo
 
