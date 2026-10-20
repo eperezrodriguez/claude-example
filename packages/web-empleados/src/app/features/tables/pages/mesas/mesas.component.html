@@ -1,0 +1,53 @@
+<div class="page-header">
+  <h1>Mesas</h1>
+</div>
+
+@if (tableStore.loading() && tableStore.tables().length === 0) {
+  <div class="spinner"></div>
+}
+
+@if (tableStore.error()) {
+  <div class="alert-error">{{ tableStore.error() }}</div>
+}
+
+@if (!tableStore.loading() && tableStore.tables().length === 0 && !tableStore.error()) {
+  <div class="empty-state"><p>No hay mesas configuradas</p></div>
+} @else {
+  <div class="tables-grid">
+    @for (table of tableStore.tables(); track table.id) {
+      <div class="table-card">
+        <div class="table-header">
+          <span class="table-name">Mesa {{ table.numero }}</span>
+          <span class="badge badge-mesa-{{ table.estado }}">{{ table.estado }}</span>
+        </div>
+        <div class="table-meta">{{ table.capacidad }} comensales</div>
+
+        <div class="status-actions">
+          @for (s of statuses; track s) {
+            <button class="btn btn-sm" [class.btn-primary]="table.estado === s"
+              [class.btn-secondary]="table.estado !== s" [disabled]="table.estado === s"
+              (click)="changeStatus(table.id, s)">{{ s }}</button>
+          }
+        </div>
+
+        @if (table.estado === 'ocupada') {
+          <div class="table-orders">
+            @for (order of ordersFor(table.id); track order.id) {
+              <div class="order-summary">
+                <span>Pedido #{{ order.id.substring(0, 8) }}</span>
+                <span class="order-counts">
+                  <span class="badge badge-pendiente">{{ itemCount(order, 'pendiente') }} pend.</span>
+                  <span class="badge badge-preparando">{{ itemCount(order, 'preparando') }} prep.</span>
+                  <span class="badge badge-listo">{{ itemCount(order, 'listo') }} listo</span>
+                  <span class="badge badge-entregado">{{ itemCount(order, 'entregado') }} entr.</span>
+                </span>
+              </div>
+            } @empty {
+              <p class="no-orders">Sin pedidos activos</p>
+            }
+          </div>
+        }
+      </div>
+    }
+  </div>
+}
