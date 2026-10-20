@@ -46,13 +46,13 @@ Cuando todas las tareas estén `[x]`:
 
 Solo si todas las tareas y todos los criterios están `[x]` (verificados):
 
-1. Busca en el plan una línea `**Origen:** scripts/issues.json — <título de la issue>`. Si no existe, el plan no viene de `issues.json`: omite este paso. Si el plan lo menciona de otra forma o hay dudas, pregunta al usuario.
+1. Toma el título exacto de la issue de GitHub (o, en planes antiguos, de la línea `**Origen:** scripts/issues.json — <título de la issue>`). Si `scripts/issues.json` no contiene ninguna issue con ese título, omite este paso. Si hay dudas, pregunta al usuario.
 2. En la copia de `scripts/issues.json` **del worktree**, elimina el objeto cuyo `title` coincida exactamente con `<título de la issue>`. Conserva el formato del fichero (indentación de 2 espacios, arrays en una línea, sin tocar el resto de issues) y comprueba que el JSON sigue siendo válido (`node -e "JSON.parse(require('fs').readFileSync('scripts/issues.json','utf8'))"`). Si no encuentras la issue, avisa y no cambies nada.
 3. Commit: `chore(issues): eliminar issue "<título>" ya implementada`, con el pie de `Co-Authored-By`. Solo `scripts/issues.json`.
 
 ### 5. Cierre
 
-Informa de forma concisa: ruta y rama del worktree, commits creados, URL de la PR, si se eliminó la issue de `scripts/issues.json`, resultado de los tests y estado de cada criterio. No fusiones ni elimines el worktree (`git worktree remove`) sin que el usuario lo pida.
+Informa de forma concisa: ruta y rama del worktree, commits creados, URL de la PR, si se cerró la issue de GitHub, si se eliminó la issue de `scripts/issues.json`, resultado de los tests y estado de cada criterio. No fusiones ni elimines el worktree (`git worktree remove`) sin que el usuario lo pida.
 
 #### Pull request
 
@@ -61,6 +61,7 @@ Solo si todas las tareas y criterios están `[x]`:
 1. Sube la rama del worktree: `git -C <worktree> push -u origin <rama>` (único `push` permitido).
 2. Crea la PR con `gh pr create --base <rama-base> --head <rama> --title "<título Conventional Commit>" --body-file <fichero>`. El cuerpo, en español, resume el objetivo, las tareas hechas y los criterios verificados, incluye `Closes #<número>` y termina con `🤖 Generated with [Claude Code](https://claude.com/claude-code)`.
 3. Guarda la URL que devuelve `gh`. Si push o `gh` fallan, díselo al usuario sin reintentar de otra forma y no envíes el mensaje de Slack.
+4. Marca la issue como completada en GitHub: `gh issue close <número> --reason completed --comment "Implementada en <URL de la PR>"`. Si falla, díselo al usuario sin reintentar de otra forma.
 
 #### Slack
 
