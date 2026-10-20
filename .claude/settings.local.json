@@ -3,5 +3,9 @@
     "allow": [
       "Bash(git init *)"
     ]
-  }
+  },
+  "enabledMcpjsonServers": [
+    "context7",
+    "slack"
+  ]
 }
