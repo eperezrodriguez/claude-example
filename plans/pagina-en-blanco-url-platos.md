@@ -19,7 +19,7 @@ Cada tarea debe poder hacerse en 5-10 minutos.
 
 ## Criterios de aceptación
 
-- [ ] `GET http://localhost:4200/restaurants/rest-2/dishes` abierto directamente en el navegador, con sesión, muestra el listado de platos, sin página en blanco.
-- [ ] La consola no muestra el error "Refused to apply style ... MIME type ('text/html')" ni 404 de `styles.css` o de los scripts de la aplicación.
-- [ ] Las rutas `/restaurants/:id/ingredients`, `/tables`, `/employees` y `/restaurants/new` también cargan al entrar directamente y al recargar con F5.
-- [ ] `npm run build -w @resttek/web-admin` termina sin errores y `dist/.../index.html` contiene `<base href="/">`.
+- [x] `GET http://localhost:4200/restaurants/rest-2/dishes` abierto directamente en el navegador, con sesión, muestra el listado de platos, sin página en blanco.
+- [x] La consola no muestra el error "Refused to apply style ... MIME type ('text/html')" ni 404 de `styles.css` o de los scripts de la aplicación.
+- [x] Las rutas `/restaurants/:id/ingredients`, `/tables`, `/employees` y `/restaurants/new` también cargan al entrar directamente y al recargar con F5.
+- [x] `npm run build -w @resttek/web-admin` termina sin errores y `dist/.../index.html` contiene `<base href="/">`.
