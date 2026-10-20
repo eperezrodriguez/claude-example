@@ -52,7 +52,7 @@ Solo si todas las tareas y todos los criterios están `[x]` (verificados):
 
 ### 5. Cierre
 
-Informa de forma concisa: ruta y rama del worktree, commits creados, URL de la PR, si se cerró la issue de GitHub, si se eliminó la issue de `scripts/issues.json`, resultado de los tests y estado de cada criterio. No fusiones ni elimines el worktree (`git worktree remove`) sin que el usuario lo pida.
+Informa de forma concisa: ruta y rama del worktree, commits creados, URL de la PR, que la issue de GitHub sigue abierta hasta el merge de la PR, si se eliminó la issue de `scripts/issues.json`, resultado de los tests y estado de cada criterio. No fusiones ni elimines el worktree (`git worktree remove`) sin que el usuario lo pida.
 
 #### Pull request
 
@@ -61,7 +61,7 @@ Solo si todas las tareas y criterios están `[x]`:
 1. Sube la rama del worktree: `git -C <worktree> push -u origin <rama>` (único `push` permitido).
 2. Crea la PR con `gh pr create --base <rama-base> --head <rama> --title "<título Conventional Commit>" --body-file <fichero>`. El cuerpo, en español, resume el objetivo, las tareas hechas y los criterios verificados, incluye `Closes #<número>` y termina con `🤖 Generated with [Claude Code](https://claude.com/claude-code)`.
 3. Guarda la URL que devuelve `gh`. Si push o `gh` fallan, díselo al usuario sin reintentar de otra forma y no envíes el mensaje de Slack.
-4. Marca la issue como completada en GitHub: `gh issue close <número> --reason completed --comment "Implementada en <URL de la PR>"`. Si falla, díselo al usuario sin reintentar de otra forma.
+4. **No cierres la issue de GitHub** (`gh issue close`) mientras la PR no esté fusionada. El `Closes #<número>` del cuerpo de la PR la cerrará automáticamente al hacer merge. Solo si el usuario te pide cerrarla, comprueba antes con `gh pr view <PR> --json state` que `state` es `MERGED`; si no lo es, niégate y explícale por qué.
 
 #### Slack
 
