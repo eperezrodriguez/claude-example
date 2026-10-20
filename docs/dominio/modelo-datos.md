@@ -12,6 +12,7 @@ erDiagram
     restaurants ||--o{ ingredients : "tiene"
     restaurants ||--o{ dishes : "tiene"
     restaurants ||--o{ orders : "tiene"
+    restaurants ||--o{ tables : "tiene"
     dishes ||--o{ dish_ingredients : "contiene"
     ingredients ||--o{ dish_ingredients : "usado en"
     orders ||--o{ order_items : "contiene"
@@ -66,6 +67,17 @@ erDiagram
         TEXT dish_id PK_FK
         TEXT ingredient_id PK_FK
         REAL quantity
+    }
+
+    tables {
+        TEXT id PK
+        TEXT restaurant_id FK
+        INTEGER numero
+        TEXT descripcion
+        INTEGER capacidad
+        TEXT estado
+        TEXT created_at
+        TEXT updated_at
     }
 
     orders {
@@ -182,6 +194,26 @@ Relación muchos-a-muchos entre platos e ingredientes.
 
 ---
 
+### `tables`
+
+Mesas de cada restaurante. Gestión por admin/manager; los empleados cambian su estado y los clientes ocupan una mesa libre.
+
+| Columna | Tipo | Nullable | Descripción |
+| --- | --- | --- | --- |
+| `id` | TEXT | No | UUID, clave primaria |
+| `restaurant_id` | TEXT | No | FK → `restaurants.id` |
+| `numero` | INTEGER | No | Número de mesa (entero > 0) |
+| `descripcion` | TEXT | Sí | Descripción libre |
+| `capacidad` | INTEGER | No | Comensales (entero > 0) |
+| `estado` | TEXT | No | `libre` (por defecto), `ocupada` o `reservada` (CHECK) |
+| `created_at` | TEXT | No | Fecha de creación |
+| `updated_at` | TEXT | No | Fecha de última actualización |
+
+- `UNIQUE(restaurant_id, numero)`.
+- `orders.table_id` guarda el `tables.id` de la mesa, pero no es una FK (sigue siendo TEXT opcional).
+
+---
+
 ### `orders`
 
 Pedidos de los clientes.
@@ -190,7 +222,7 @@ Pedidos de los clientes.
 | --- | --- | --- | --- |
 | `id` | TEXT | No | UUID, clave primaria |
 | `restaurant_id` | TEXT | No | FK → `restaurants.id` |
-| `table_id` | TEXT | Sí | Identificador de mesa (opcional) |
+| `table_id` | TEXT | Sí | `tables.id` de la mesa (opcional, sin FK) |
 | `client_id` | TEXT | Sí | ID del cliente (opcional) |
 | `created_at` | TEXT | No | Fecha de creación |
 
