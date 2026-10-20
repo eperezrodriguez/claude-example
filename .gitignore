@@ -6,3 +6,4 @@ dist/
 *.db
 *.log
 .DS_Store
+scripts/blocked.json
