@@ -14,7 +14,7 @@ Cada tarea debe poder hacerse en 5-10 minutos.
 
 - [x] **T1.** Reproducir el fallo: arrancar `npm run dev:admin` y abrir directamente `/restaurants/rest-2/dishes` con sesión iniciada; anotar los 404 de `styles.css` y de los scripts en la consola — `packages/web-admin/src/index.html` (~5 min)
 - [x] **T2.** Añadir `<base href="/">` dentro de `<head>`, antes de los `<link>`, igual que en los otros dos front — `packages/web-admin/src/index.html` (~5 min)
-- [ ] **T3.** Comprobar que `/restaurants/:id/dishes`, `/ingredients`, `/tables`, `/employees` y `/restaurants/new` cargan al entrar directamente y tras recargar (F5), y que la navegación desde el menú sigue funcionando — `packages/web-admin` (~10 min)
+- [x] **T3.** Comprobar que `/restaurants/:id/dishes`, `/ingredients`, `/tables`, `/employees` y `/restaurants/new` cargan al entrar directamente y tras recargar (F5), y que la navegación desde el menú sigue funcionando — `packages/web-admin` (~10 min)
 - [ ] **T4.** Compilar con `npm run build -w @resttek/web-admin` y confirmar que el `index.html` generado incluye `<base href="/">` — `packages/web-admin` (~5 min)
 
 ## Criterios de aceptación
