@@ -6,12 +6,6 @@
     "body": "No se está controlando el acceso a http://localhost:4201/barra, http://localhost:4201/salon y http://localhost:4201/cocina.\n\n- Un camarero solo debería de poder entrar a barra y salón.\n- El cocinero solo debería de poder entrar a la cocina.\n- El gerente puede ver todo."
   },
   {
-    "title": "Página en blanco al entrar en la url de platos",
-    "type": "bug",
-    "projects": ["web-admin"],
-    "body": "Cuando entramos directamente en esta ruta http://localhost:4200/restaurants/rest-2/dishes o cualquiera similar se queda la página en blanco."
-  },
-  {
     "title": "Seed no borra datos previos",
     "type": "bug",
     "projects": ["api"],
